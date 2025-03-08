@@ -21,6 +21,11 @@ def log_error():
     else:
         error_row = app_tables.error.add_row(Error=error,timeline=[],Users=[user], User_Count=1, status="pending")
 
-    error_row['last_appeared'] = datetime.utcnow()
+    current_time = datetime.utcnow()
+    error_row['last_appeared'] = current_time
 
-    new_timeline = app_tables.ti
+    new_timeline = app_tables.timeline.add_row(datetime=current_time, type="user_error", User=user, Additional_Info=additional_data)
+
+    timeline = error_row['timeline']
+    timeline.append(new_timeline)
+    error_row['timeline'] = timeline
