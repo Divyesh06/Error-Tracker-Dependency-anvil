@@ -3,6 +3,8 @@ unique_ids:
     standard-page.html: SVTCLVEE3OFJXISIPSTV4A4SPFMEHT6B
     theme.css: 4TJA2UKANUTW4YGDUH5MA326DOOSYBKC
   forms: {}
-  modules: {}
+  modules:
+    Module1: '1741445249466921011341567.1177'
   scripts: {}
-  server_modules: {}
+  server_modules:
+    ServerModule1: '1741445320675214789230886.45807'
