@@ -8,7 +8,6 @@ def log_error():
 
         body = anvil.server.request.body_json
         error = body['error']
-        print(error)
         
         additional_data = body['additional_data']
         additional_data['session'] = anvil.server.get_session_id()
@@ -19,10 +18,11 @@ def log_error():
             users.append(anvil.users.get_user())
             error_row['Users'] = list(set(users))
             error_row['User_Count'] = len(users)
+            error['Traceback'] = body['traceback']
             if error_row['status'] == "fixed":
                 error_row['status'] = "reappeared"
         else:
-            error_row = app_tables.error.add_row(Error=error,timeline=[],Users=[user], User_Count=1, status="pending")
+            error_row = app_tables.error.add_row(Error=error,timeline=[],Users=[user], User_Count=1, status="pending", traceback = body['traceback'])
     
         current_time = datetime.utcnow()
         error_row['last_appeared'] = current_time

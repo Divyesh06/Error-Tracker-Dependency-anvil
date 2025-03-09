@@ -1,6 +1,13 @@
 allow_embedding: false
 db_schema: {}
 name: Track Error
+native_deps:
+  head_html: |-
+    <script>
+        function get_error_traceback(err) {
+            return err.v.traceback
+        }
+    </script>
 package_name: Track_Error
 runtime_options:
   client_version: '3'
