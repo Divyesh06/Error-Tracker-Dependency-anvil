@@ -8,6 +8,7 @@ native_deps:
             return err.v.traceback
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/ua-parser-js/dist/ua-parser.min.js" ></script>
 package_name: Track_Error
 runtime_options:
   client_version: '3'
@@ -18,3 +19,5 @@ services:
 - client_config: {enable_v2: true}
   server_config: {}
   source: /runtime/services/tables.yml
+startup: {module: error_tracker, type: module}
+startup_form: null
