@@ -7,4 +7,4 @@ unique_ids:
     error_tracker: '1741445249466921011341567.1177'
   scripts: {}
   server_modules:
-    Error_Tracker: '1741445320675214789230886.45807'
+    Error_Tracker_Server: '1741445320675214789230886.45807'
