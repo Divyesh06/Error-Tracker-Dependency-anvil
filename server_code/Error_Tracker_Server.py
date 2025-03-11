@@ -35,9 +35,12 @@ def log_error():
                 error_row['status'] = "reappeared"
                 app_tables.timeline.add_row(type="error_reappeared", datetime = current_time, error = error_row)
         else:
-            error_row = app_tables.error.add_row(error_msg = error, users=[user], user_count=1, status="pending", traceback = body['traceback'], error_count = 1, sessions = [session], first_appeared = current_time)
-    
-        
+            if not user:
+                users = []
+            else:
+                users = [user]
+            error_row = app_tables.error.add_row(error_msg = error, users=users, user_count=1, status="pending", traceback = body['traceback'], error_count = 1, sessions = [session], first_appeared = current_time)
+
         error_row['last_appeared'] = current_time
             
         app_tables.timeline.add_row(datetime=current_time, type="user_error", user=user, additional_info = additional_data, error = error_row)
