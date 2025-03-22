@@ -18,8 +18,13 @@ def log_error():
         user = anvil.users.get_user()
         
         if error_row:
+            
+            if error_row['status'] == "ignored": 
+                return #Don't do anything if error is ignored
+                
             if app_tables.error.get(sessions = [session], error_msg = error, traceback = traceback):
                 return #Same error in this session already
+                
             if user:
                 users = error_row['users']
                 users.append(anvil.users.get_user())
@@ -46,4 +51,4 @@ def log_error():
         app_tables.timeline.add_row(datetime=current_time, type="user_error", user=user, additional_info = additional_data, error = error_row)
         
     except Exception as e:
-        app_tables.error.add_row(error_msg = str(e))
+        print("Exception while tracking error: ", str(e))
