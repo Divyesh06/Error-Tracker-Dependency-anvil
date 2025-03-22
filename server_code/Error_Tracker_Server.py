@@ -13,7 +13,8 @@ def log_error():
         session = anvil.server.get_session_id()
         additional_data = body['additional_data']
         additional_data['session'] = session
-        
+        if not app_tables.app_data.get():
+            app_tables.app_data.add_row(app_id = anvil.app.id)
         error_row = app_tables.error.get(error_msg = error, traceback = traceback)
         user = anvil.users.get_user()
         
@@ -51,4 +52,5 @@ def log_error():
         app_tables.timeline.add_row(datetime=current_time, type="user_error", user=user, additional_info = additional_data, error = error_row)
         
     except Exception as e:
+        app_tables.error.add_row(error_msg = str(e))
         print("Exception while tracking error: ", str(e))

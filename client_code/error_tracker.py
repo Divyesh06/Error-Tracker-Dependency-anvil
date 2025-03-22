@@ -9,8 +9,8 @@ def convert_to_py(js_object):
     
 def collect_error(err, collect_device_info = False, **additional_data):
     try:
-        if "debug" in anvil.app.environment.tags:
-            return
+        # if "debug" in anvil.app.environment.tags:
+        #     return
         err_str = f"{type(err).__name__}: {str(err)}"
         traceback = anvil.js.call("get_error_traceback",err)
     
