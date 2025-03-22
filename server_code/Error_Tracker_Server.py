@@ -15,45 +15,61 @@ def log_error():
         additional_data['session'] = session
         
         if not app_tables.app_data.get():
-            app_tables.app_data.add_row(app_id = anvil.app.id)
-            
-        error_row = app_tables.error.get(error_msg = error, traceback = traceback)
+            app_tables.app_data.add_row(app_id=anvil.app.id)
+        
+        error_row = app_tables.error.get(error_msg=error, traceback=traceback)
         user = anvil.users.get_user()
         
         if error_row:
-            
             if error_row['status'] == "ignored": 
-                return #Don't do anything if error is ignored
-                
-            if app_tables.error.get(sessions = [session], error_msg = error, traceback = traceback):
-                return #Same error in this session already
-                
+                return  # Don't do anything if error is ignored
+            
+            if app_tables.error.get(sessions=[session], error_msg=error, traceback=traceback):
+                return  # Same error in this session already
+            
+            users = error_row['users']
             if user:
-                users = error_row['users']
-                if user:
-                    users.append(user['email'])
+                users.append(user['email'])
                 users = list(set(users))
-                error_row['users'] = users
-                error_row['user_count'] = len(users)
-            error_row['error_count'] += 1
+            
             sessions = error_row['sessions']
             sessions.append(session)
-            error_row['sessions'] = sessions
-            error_row['traceback'] = traceback
-            if error_row['status'] == "fixed":
-                error_row['status'] = "reappeared"
-                app_tables.timeline.add_row(type="error_reappeared", datetime = current_time, error = error_row)
-        else:
-            if not user:
-                users = []
-            else:
-                users = [user['email']]
-            error_row = app_tables.error.add_row(error_msg = error, users=users, user_count=1, status="pending", traceback = body['traceback'], error_count = 1, sessions = [session], first_appeared = current_time)
-
-        error_row['last_appeared'] = current_time
             
-        app_tables.timeline.add_row(datetime=current_time, type="user_error", user_email=user['email'] if user else None, additional_info = additional_data, error = error_row)
+            update_data = {
+                "users": users,
+                "user_count": len(users),
+                "error_count": error_row['error_count'] + 1,
+                "sessions": sessions,
+                "traceback": traceback,
+                "last_appeared": current_time
+            }
+            
+            if error_row['status'] == "fixed":
+                update_data["status"] = "reappeared"
+                app_tables.timeline.add_row(type="error_reappeared", datetime=current_time, error=error_row)
+            
+            error_row.update(**update_data)
+        else:
+            users = [user['email']] if user else []
+            error_row = app_tables.error.add_row(
+                error_msg=error,
+                users=users,
+                user_count=len(users),
+                status="pending",
+                traceback=traceback,
+                error_count=1,
+                sessions=[session],
+                first_appeared=current_time,
+                last_appeared=current_time
+            )
+        
+        app_tables.timeline.add_row(
+            datetime=current_time,
+            type="user_error",
+            user_email=user['email'] if user else None,
+            additional_info=additional_data,
+            error=error_row
+        )
         
     except Exception as e:
-        app_tables.error.add_row(error_msg = str(e))
-        print("Exception while tracking error: ", str(e))
+        print("Exception while tracking error:", str(e))

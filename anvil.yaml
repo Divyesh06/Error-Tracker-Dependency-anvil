@@ -1,6 +1,6 @@
 allow_embedding: false
 db_schema: {}
-name: Error Tracker
+name: Error Tracker Dependency
 native_deps:
   head_html: |-
     <script>
@@ -9,7 +9,7 @@ native_deps:
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/ua-parser-js/dist/ua-parser.min.js" ></script>
-package_name: Error_Tracker
+package_name: Error_Tracker_Dependency
 runtime_options:
   client_version: '3'
   server_spec: {base: python310-minimal}
